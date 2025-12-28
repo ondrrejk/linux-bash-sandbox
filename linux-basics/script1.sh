@@ -128,3 +128,23 @@ grep -E '404|500' fake_webserver_logs.txt
 grep '.4[0-9][0-9]' fake_webserver_logs.txt
 # use case for ip addresses
 grep -E '([0-9]{3})\.{3}[0-9]{1,3}' fake_webserver_logs.txt # looks for digits 0-9 3 times in a row + escaped dot symbol, and repeats that 3 times (first 3 octets), and then digits 0-9 1, 2 or 3 times in a row (fourth octet)
+# awk => data manipulation tool, designed for pattern scanning and processing - both a cmdline utility and a full programming language
+ps # displays a snapshot of currently running processes
+ps | awk '{print $1}' # prints column 1 (PID)
+ps | awk '{print $2}' # prints column 2 (TTY)
+ps | awk '{print $0}' # prints ps itself
+
+cat /etc/passwd/ # cats all users on linux system - column-formatted file
+# print all usernames in linux system
+awk -F ":" '{print $1}' /etc/passwd # -F flag => input field separator (how awk splits each input line into fields, default => whitespace)
+awk -F ":" '{print $1 $6 $7}' /etc/passwd # prints columns 1, 6 and 7 using colons as separators
+awk -F ":" '{print $1 " " $6 " " $7}' /etc/passwd # puts spaces between that for readability
+awk -F ":" '{print $1 "\t" $6 "\t" $7}' /etc/passwd # puts tabs between that for even better readability
+# we can use actions to use field separators and insert different field separators
+awk 'BEGIN{FS=":"; OFS="-"} {print $1,$6,$7}' /etc/passwd
+
+cat /etc/shells # cats all open shells in my system
+# what if i want to print the shell names without the full paths?
+awk -F "/" '/^\// {print $NF}' /etc/shells # sets field separatior to "/", matches only lines that start with a slash (^\/) and prints the last field ($NF)
+# /.../ => awk's pattern delimiters
+# ^\/ => inner regex

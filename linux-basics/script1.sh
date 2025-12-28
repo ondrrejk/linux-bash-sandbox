@@ -77,3 +77,54 @@ cp -vR somedir1 somedir3 # -v for verbose:
 # 'somedir1' -> 'somedir3/somedir1'
 # 'somedir1/somefile1.txt' -> 'somedir3/somedir1/somefile1.txt'
 # 'somedir1/somefile2.txt' -> 'somedir3/somedir1/somefile2.txt'
+# see memory usage by process
+top
+# see memory usage in machine-friendlier format (batch mode)
+top -b
+# search simple text in file contents
+grep # [searched_text] [filepath]
+grep DELETE fake_webserver_logs.txt
+# pipeline cat to grep
+cat fake_webserver_logs.txt | grep DELETE
+# look for all occurences of divs in all html files in pwd
+grep div *.html
+# note that grep prints the whole lines in which the looked-for term occurs
+# we can print the count by using the -c option
+grep div *.html -c
+# case insensitive search
+grep div *.html -i
+# every line that doesn't match the searched term
+grep div *.html -v
+# count of unmatching lines
+grep div *.html -vc
+# the -x option searches for absolute matches => the whole line must match with the searched term
+grep -x "</html>" *.html
+# the -w flag searches for whole matches, so "div" won't match when we're looking for the term "iv"
+grep iv *.html # outputs the lines with "div" because it contains "iv"
+grep -w iv *.html # outputs only lines with "iv", so "div" doesn't count
+# practical use of grep => looking for -a flag in lsof manual:
+man lsof | grep '-a' # results in an error, because the syntax is wrong - grep doesn't have an -a flag
+man lsof | grep -- '-a' # explicitly state that you are not passing any flags and that -a is the searched term => successfully looks for occurences of -a in man lsof
+# print 3 lines BEFORE the line containing "iv"
+grep -w -B 3 iv *.html
+# -B [num] prints [num] lines BEFORE
+# -A [num] prints [num] lines AFTER
+# -C [num] prints [num] lines both BEFORE and AFTER
+grep '^FROM' # ^ prints the line that starts with FROM, not lines that contain FROM but not at the start of the line
+grep '80$' # $ prints the line that ends with 80, not lines that contain 80 but not at the end of the line
+# also we can use these two together + the asterisk
+cat index.html | grep '^.*$' # prints all lines
+cat index.html | grep '^<.*>$' # prints lines that begin with < and end with >, therefore single elements in the context of html
+# look for words that begin with searched term => \b
+grep '\biv' *.html # outputs lines that contain a word that begins with "iv"
+grep '\bi' *.html # outputs lines that contain a word that begins with "i" (ex. initial, items,..)
+# \b is used as a boundary
+grep '\b404\b' fake_webserver_logs.txt # same as using the -w flag => looks for delineated 404 occurences
+# usage of OR operator
+grep '404\|500' fake_webserver_logs.txt # looks for all occurences of 404 OR 500
+# or use the -E flag if you dont want to use the backslash to escape the | operator
+grep -E '404|500' fake_webserver_logs.txt
+# search for 4xx by using range of digits [0-9] (regex)
+grep '.4[0-9][0-9]' fake_webserver_logs.txt
+# use case for ip addresses
+grep -E '([0-9]{3})\.{3}[0-9]{1,3}' fake_webserver_logs.txt # looks for digits 0-9 3 times in a row + escaped dot symbol, and repeats that 3 times (first 3 octets), and then digits 0-9 1, 2 or 3 times in a row (fourth octet)

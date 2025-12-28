@@ -148,3 +148,18 @@ cat /etc/shells # cats all open shells in my system
 awk -F "/" '/^\// {print $NF}' /etc/shells # sets field separatior to "/", matches only lines that start with a slash (^\/) and prints the last field ($NF)
 # /.../ => awk's pattern delimiters
 # ^\/ => inner regex
+awk -F "/" '/^\// {print $NF}' /etc/shells | uniq | sort # by using pipelines, i can sort this even further...
+
+# another column formatted command => df => reports the amount of available and used disk space on file systems (disk-free)
+df | awk '/\/dev\/nvme/ {print $1"\t"$2"\t"$3}' # pipe df into awk => look for /dev/nvme and print the first 3 columns with tabs inbetween
+df | awk '/\/dev\/nvme/ {print $1"\t"$2 + $3}' # i can perform arithmetic operations on the columns
+
+# i just found a cool command => "cd ../" sets you back by 1 step in the file tree
+
+# you can filter the results by length of the line itself
+cat /etc/shells
+awk 'length{$0} > 7' /etc/shells # print lines that are longer than 7 characters
+awk 'length{$0} <= 7' /etc/shells # print lines that are shorter than or equal to 7 characters
+# list all processes (ps -e) in a full format (-f)
+ps -ef
+ps -ef | awk '{ if($NF == "/bin/bash") print $0}' # print every process that is running on bash

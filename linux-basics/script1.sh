@@ -169,3 +169,11 @@ awk 'BEGIN { for(i=1; i<=10; i++) print "The square root of", i, "is", i*i;}' # 
 awk '$1 - /^[b,c]/ {print $0}' .bashrc
 # print every line of numbered.txt, but start at the fourth character
 awk '{print substr($0, 4)}' numbered.txt
+# free => used to display the total amount of free and used physical memory and swap space in the system, as well as the buffers and cache consumed by the kernel
+free
+# free -m => display memory in mebibytes (MiB)
+# free -g => display memory in gigabytes (GB)
+# free -s [delay] => continuously display the output every [delay] seconds
+# free -c [count] => repeat the display [count] times
+# free -t => show a total line for physical memory and swap space combined
+# free -h => displays system memory usage in a human-readable format

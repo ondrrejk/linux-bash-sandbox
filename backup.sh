@@ -9,7 +9,7 @@ GREEN="\e[32m"
 YELLOW="\e[33m"
 RESET="\e[0m" # resets all attributes
 
-if [[ "$1 == --help" || "$1 == -h" ]] then;
+if [[ "$1" == "--help" || "$1" == "-h" ]] then;
     echo -e "${YELLOW}Usage:${RESET}"
     echo "  Usage: ./backup.sh [source_file] [destination_dir]"
     echo
@@ -40,7 +40,7 @@ spinner(){
 }
 
 # create timestamp
-TIMESTAMP=$(date +"%Y/%m/%d_%H:%M:%S") # date => current date in default format, you can add custom format by prefix + and [format string]
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S") # date => current date in default format, you can add custom format by prefix + and [format string]
 
 # setup logging
 LOGFILE="backup.log"
@@ -48,7 +48,7 @@ log(){
     echo "$TIMESTAMP - $1" >> "$LOGFILE" # logs current timestamp and provided message (first parameter)
 }
 
-if [["$1" == "--menu"]]; then
+if [[ "$1" == "--menu" ]]; then
     echo -e "${YELLOW}Backup Menu${RESET}"
     echo "1) Create backup"
     echo "2) Restore backup"
@@ -78,12 +78,12 @@ if [["$1" == "--menu"]]; then
 fi
 
 # restore option
-if [["$1" == "--restore"]]; then
+if [[ "$1" == "--restore" ]]; then
     BACKUP_FILE=$2
     RESTORE_DIR=$3
 
     # unexisting file error catch
-    if [[ ! -f "$BACKUP_FILE"]]; then
+    if [[ ! -f "$BACKUP_FILE" ]]; then
         echo -e "${RED}Error: Backup file not found.${RESET}"
         exit 1
     fi
@@ -106,22 +106,22 @@ fi
 
 # compression options
 COMPRESSION=""
-if [["$1" == --fast]]; then
+if [[ "$1" == --fast ]]; then
     COMPRESSION="--fast"
     shift
-elif [["$1" == --max]]; then
+elif [[ "$1" == --max ]]; then
     COMPRESSION="--max"
     shift
 fi
 
 # --exclude flag
 EXCLUDES=()
-while [["$1" == "--exclude"]]; do
+while [[ "$1" == "--exclude" ]]; do
     EXCLUDES+=("$2")
     shift 2
 done
 
-if [$# -ne 2]; then # if number of params -not equals 2 then
+if [ $# -ne 2 ]; then # if number of params -not equals 2 then
     echo "${RED}Error: You must provide a source file and a destination directory."
     echo "${YELLOW}Usage: ./backup.sh [source_file] [destination_dir]${RESET}"
     exit 1 # exit with an error
@@ -135,12 +135,12 @@ echo "Destination: $DEST"
 # log backup source and destination
 log "Backup started. Source: $SOURCE, Destination: $DEST"
 
-if [! -d "$SOURCE"]; then # if directory source doesnt exist then
+if [ ! -d "$SOURCE" ]; then # if directory source doesnt exist then
     echo "${RED}Error: Source directory '$SOURCE' does not exist."
     exit 1
 fi
 
-if [! -d "$DEST"]; then # if directory destination doesnt exist then
+if [ ! -d "$DEST" ]; then # if directory destination doesnt exist then
     echo "${YELLOW}Destination directory '$DEST' does not exist. Creating it...${RESET}"
     mkdir -p "$DEST" # make full directory path with the name "$DEST"
 fi
@@ -171,11 +171,11 @@ else
     TAR_OPTIONS=""
 fi
 # apply tar options and exclusions to tar and create backup
-tar -czf "$DEST/$BACKUP_NAME" "$TAR_OPTIONS" ${TAR_EXCLUDES[@]} "$SOURCE" & # treat every element in TAR_EXCLUDES as a separate element
+tar -czf "$DEST/$BACKUP_NAME" $TAR_OPTIONS "${TAR_EXCLUDES[@]}" "$SOURCE" & # treat every element in TAR_EXCLUDES as a separate element
 spinner # show spinner when zipping
 
 # print success / error
-if [-f "$DEST/$BACKUP_NAME"]; then # if backup file is a file, then
+if [ -f "$DEST/$BACKUP_NAME" ]; then # if backup file is a file, then
     echo "${GREEN}Backup created: $DEST/$BACKUP_NAME" # success
     # log backup success
     log "Backup completed successfully: $DEST/$BACKUP_NAME"
@@ -187,7 +187,7 @@ else
 fi
 
 # show backup size
-BACKUP_SIZE=(du -h "$DEST/$BACKUP_NAME" | awk '{print $1}') # backup size = disk usage of "$DEST/$BACKUP_NAME" in a human-readable format -> pipe that into awk - first column
+BACKUP_SIZE=$(du -h "$DEST/$BACKUP_NAME" | awk '{print $1}') # backup size = disk usage of "$DEST/$BACKUP_NAME" in a human-readable format -> pipe that into awk - first column
 echo "${YELLOW}Backup file size: $BACKUP_SIZE"
 # log backup size
-log "Backup size: $SIZE"
+log "Backup size: $BACKUP_SIZE"

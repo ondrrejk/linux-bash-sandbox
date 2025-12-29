@@ -163,3 +163,9 @@ awk 'length{$0} <= 7' /etc/shells # print lines that are shorter than or equal t
 # list all processes (ps -e) in a full format (-f)
 ps -ef
 ps -ef | awk '{ if($NF == "/bin/bash") print $0}' # print every process that is running on bash
+# the BEGIN block is a special pattern that executes once before any input records are read, making it ideal for initialization tasks such as setting variables, defining field separators, or printing headers.
+awk 'BEGIN { for(i=1; i<=10; i++) print "The square root of", i, "is", i*i;}' # prints sqrt of i 1...10 without requiring any input file.
+# print every line from .bashrc that begins with b or c
+awk '$1 - /^[b,c]/ {print $0}' .bashrc
+# print every line of numbered.txt, but start at the fourth character
+awk '{print substr($0, 4)}' numbered.txt

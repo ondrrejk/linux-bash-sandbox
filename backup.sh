@@ -15,12 +15,25 @@ DEST=$2 # second param = destination
 echo "Source: $SOURCE"
 echo "Destination: $DEST"
 
-if [! -d "$SOURCE"]; then
+if [! -d "$SOURCE"]; then # if directory source doesnt exist then
     echo "Error: Source directory '$SOURCE' does not exist."
     exit 1
 fi
 
-if [! -d "$DEST"]; then
+if [! -d "$DEST"]; then # if directory destination doesnt exist then
     echo "Destination directory '$DEST' does not exist. Creating it..."
-    mkdir -p "$DEST"
+    mkdir -p "$DEST" # make full directory path with the name "$DEST"
 fi
+
+# create timestamp
+TIMESTAMP=$(date +"%Y/%m/%d_%H:%M:%S")
+
+# create backup name
+BACKUP_NAME="backup_$TIMESTAMP.tar.gz" # tar = tape archive, .gz = GNU zip => make the backup file an archive file and compress it
+
+# create the archive
+echo "Creating backup..."
+tar -czf "$DEST/$BACKUP_NAME" "$SOURCE" # tar: (c)reate g(z)ip (v)erbose (f)ilename [filename.tar.gz] [contents]
+
+# print success
+echo "Backup created: $DEST/$BACKUP_NAME"

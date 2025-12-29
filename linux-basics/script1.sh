@@ -182,3 +182,6 @@ mpstat # shows processor info and statistics
 
 # if you want more formatting, use printf
 awk '{printf}' # syntax => printf [format] [input(s)] - % is used in the format for the inputs
+
+# mkdir -p => used to create a directory and any necessary parent directories in the specified path, if they do not already exist
+mkdir -p example/test # this will create the example directory if it does not exist, and then create the test directory inside it.

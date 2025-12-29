@@ -42,3 +42,7 @@ else
     echo "Error: Backup failed." # error
     exit 1
 fi
+
+# show backup size
+BACKUP_SIZE=(du -h "$DEST/$BACKUP_NAME" | awk '{print $1}') # backup size = disk usage of "$DEST/$BACKUP_NAME" in a human-readable format -> pipe that into awk - first column
+echo "Backup file size: $BACKUP_SIZE"

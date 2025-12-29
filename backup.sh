@@ -35,5 +35,10 @@ BACKUP_NAME="backup_$TIMESTAMP.tar.gz" # tar = tape archive, .gz = GNU zip => ma
 echo "Creating backup..."
 tar -czf "$DEST/$BACKUP_NAME" "$SOURCE" # tar: (c)reate g(z)ip (v)erbose (f)ilename [filename.tar.gz] [contents]
 
-# print success
-echo "Backup created: $DEST/$BACKUP_NAME"
+# print success / error
+if [-f "$DEST/$BACKUP_NAME"]; then # if backup file is a file, then
+    echo "Backup created: $DEST/$BACKUP_NAME" # success
+else
+    echo "Error: Backup failed." # error
+    exit 1
+fi

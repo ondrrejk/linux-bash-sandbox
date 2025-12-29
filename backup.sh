@@ -19,6 +19,7 @@ if [[ "$1 == --help" || "$1 == -h" ]] then;
     echo
     echo -e "${YELLOW}Options:${RESET}"
     echo "  --help, -h  Show this help menu"
+    echo "  --restore [directory_path]   Option to restore backup file into a directory"
     echo "  --fast  Enables low compression, faster"
     echo "  --max   Enables high compression, slower"
     echo "  --exclude [directory_path]   Excludes directory from backup"
@@ -33,6 +34,32 @@ LOGFILE="backup.log"
 log(){
     echo "$TIMESTAMP - $1" >> "$LOGFILE" # logs current timestamp and provided message (first parameter)
 }
+
+# restore option
+if [["$1" == "--restore"]]; then
+    BACKUP_FILE=$2
+    RESTORE_DIR=$3
+
+    # unexisting file error catch
+    if [[ ! -f "$BACKUP_FILE"]]; then
+        echo -e "${RED}Error: Backup file not found.${RESET}"
+        exit 1
+    fi
+
+    # create directory for restored file
+    mkdir -p "$RESTORE_DIR"
+    
+    echo -e "${YELLOW}Restoring backup...${RESET}"
+    log "Restoring $BACKUP_FILE to $RESTORE_DIR"
+
+    # tar -> extract zip file
+    tar -xzf "$BACKUP_FILE" -C "$RESTORE_DIR" # -C flag is used for specifying destination directory
+
+    echo -e "${GREEN}Backup successfully restored.${RESET}"
+    log "Restore complete"
+
+    exit 0
+fi
 
 # compression options
 COMPRESSION=""

@@ -22,6 +22,15 @@ if [[ "$1 == --help" || "$1 == -h" ]] then;
     exit 0
 fi
 
+# create timestamp
+TIMESTAMP=$(date +"%Y/%m/%d_%H:%M:%S") # date => current date in default format, you can add custom format by prefix + and [format string]
+
+# setup logging
+LOGFILE="backup.log"
+log(){
+    echo "$TIMESTAMP - $1" >> "$LOGFILE" # logs current timestamp and provided message (first parameter)
+}
+
 # --exclude flag
 EXCLUDE=""
 if [["$1" == "--exclude"]]; then
@@ -40,6 +49,8 @@ DEST=$2 # second param = destination
 
 echo "Source: $SOURCE"
 echo "Destination: $DEST"
+# log backup source and destination
+log "Backup started. Source: $SOURCE, Destination: $DEST"
 
 if [! -d "$SOURCE"]; then # if directory source doesnt exist then
     echo "${RED}Error: Source directory '$SOURCE' does not exist."
@@ -51,17 +62,18 @@ if [! -d "$DEST"]; then # if directory destination doesnt exist then
     mkdir -p "$DEST" # make full directory path with the name "$DEST"
 fi
 
-# create timestamp
-TIMESTAMP=$(date +"%Y/%m/%d_%H:%M:%S")
-
 # create backup name
 BACKUP_NAME="backup_$TIMESTAMP.tar.gz" # tar = tape archive, .gz = GNU zip => make the backup file an archive file and compress it
 
 # create the archive
 echo "${YELLOW}Creating backup...${RESET}"
+# log creating backup
+log "Creating backup archive..."
 if [-n "$EXCLUDE"]; then # if EXCLUDE contains anything, then
     echo -e "${YELLOW}Excluding: '$EXCLUDE'${RESET}"
     tar -czf "$DEST/$BACKUP_NAME" --exclude "$EXCLUDE" "$SOURCE"
+    # log backup exclusion
+    log "Excluding directory: $EXCLUDE"
 else
     tar -czf "$DEST/$BACKUP_NAME" "$SOURCE" # tar: (c)reate g(z)ip (v)erbose (f)ilename [filename.tar.gz] [contents]
 fi
@@ -69,11 +81,17 @@ fi
 # print success / error
 if [-f "$DEST/$BACKUP_NAME"]; then # if backup file is a file, then
     echo "${GREEN}Backup created: $DEST/$BACKUP_NAME" # success
+    # log backup success
+    log "Backup completed successfully: $DEST/$BACKUP_NAME"
 else
     echo "${RED}Error: Backup failed.${RESET}" # error
+    # log backup fail
+    log "Backup failed."
     exit 1
 fi
 
 # show backup size
 BACKUP_SIZE=(du -h "$DEST/$BACKUP_NAME" | awk '{print $1}') # backup size = disk usage of "$DEST/$BACKUP_NAME" in a human-readable format -> pipe that into awk - first column
 echo "${YELLOW}Backup file size: $BACKUP_SIZE"
+# log backup size
+log "Backup size: $SIZE"

@@ -26,6 +26,19 @@ if [[ "$1 == --help" || "$1 == -h" ]] then;
     exit 0
 fi
 
+spinner(){
+    local pid=$!
+    local delay=0.1
+    local spin='|/-\'
+    while kill -0 $pid 2>/dev/null; do # if process isn't killed, continue, else hide any error output (error code 2 = user-side error, redirect that into /dev/null)
+        for i in {0..3}; do # for spin.length times
+            printf "\r${YELLOW}Processing... ${spin:$i:1}${RESET}" # spin -> specified at $i position -> extracts 1 character
+            sleep $delay # wait for [delay] seconds
+        done
+    done
+    printf "\r${GREEN}Done!${RESET}\n"
+}
+
 # create timestamp
 TIMESTAMP=$(date +"%Y/%m/%d_%H:%M:%S") # date => current date in default format, you can add custom format by prefix + and [format string]
 
@@ -53,7 +66,8 @@ if [["$1" == "--restore"]]; then
     log "Restoring $BACKUP_FILE to $RESTORE_DIR"
 
     # tar -> extract zip file
-    tar -xzf "$BACKUP_FILE" -C "$RESTORE_DIR" # -C flag is used for specifying destination directory
+    tar -xzf "$BACKUP_FILE" -C "$RESTORE_DIR" & # -C flag is used for specifying destination directory
+    spinner # show spinner when extracting
 
     echo -e "${GREEN}Backup successfully restored.${RESET}"
     log "Restore complete"
@@ -128,7 +142,8 @@ else
     TAR_OPTIONS=""
 fi
 # apply tar options and exclusions to tar and create backup
-tar -czf "$DEST/$BACKUP_NAME" "$TAR_OPTIONS" ${TAR_EXCLUDES[@]} "$SOURCE" # treat every element in TAR_EXCLUDES as a separate element
+tar -czf "$DEST/$BACKUP_NAME" "$TAR_OPTIONS" ${TAR_EXCLUDES[@]} "$SOURCE" & # treat every element in TAR_EXCLUDES as a separate element
+spinner # show spinner when zipping
 
 # print success / error
 if [-f "$DEST/$BACKUP_NAME"]; then # if backup file is a file, then

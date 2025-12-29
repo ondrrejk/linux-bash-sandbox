@@ -185,3 +185,6 @@ awk '{printf}' # syntax => printf [format] [input(s)] - % is used in the format 
 
 # mkdir -p => used to create a directory and any necessary parent directories in the specified path, if they do not already exist
 mkdir -p example/test # this will create the example directory if it does not exist, and then create the test directory inside it.
+
+# special device file that discards all data written to it, effectively acting as a black hole
+/dev/null

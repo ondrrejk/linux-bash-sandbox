@@ -48,6 +48,35 @@ log(){
     echo "$TIMESTAMP - $1" >> "$LOGFILE" # logs current timestamp and provided message (first parameter)
 }
 
+if [["$1" == "--menu"]]; then
+    echo -e "${YELLOW}Backup Menu${RESET}"
+    echo "1) Create backup"
+    echo "2) Restore backup"
+    echo "3) Exit"
+    # display user input
+    read -p "Choose an option: " CHOICE # -p option displays a prompt message on standard error before attempting to read input, without adding a trailing newline, so the user's input appears on the same line as the prompt
+    case $CHOICE in
+        1)
+            read -p "Source directory: " SOURCE
+            read -p "Destination directory: " DEST
+            ./backup.sh "$SOURCE" "$DEST"
+            ;; # break statement
+        2)
+            read -p "Backup file: " FILE
+            read -p "Restoration directory: " DIR
+            ./backup.sh --restore "$FILE" "$DIR"
+            ;;
+        3)
+            exit 0
+            ;;
+        *)
+            echo "Invalid choice."
+            ;;
+    esac
+
+    exit 0
+fi
+
 # restore option
 if [["$1" == "--restore"]]; then
     BACKUP_FILE=$2

@@ -32,11 +32,11 @@ log(){
 }
 
 # --exclude flag
-EXCLUDE=""
-if [["$1" == "--exclude"]]; then
-    EXCLUDE="$2"
+EXCLUDES=()
+while [["$1" == "--exclude"]]; do
+    EXCLUDES+=("$2")
     shift 2
-fi
+done
 
 if [$# -ne 2]; then # if number of params -not equals 2 then
     echo "${RED}Error: You must provide a source file and a destination directory."
@@ -69,14 +69,17 @@ BACKUP_NAME="backup_$TIMESTAMP.tar.gz" # tar = tape archive, .gz = GNU zip => ma
 echo "${YELLOW}Creating backup...${RESET}"
 # log creating backup
 log "Creating backup archive..."
-if [-n "$EXCLUDE"]; then # if EXCLUDE contains anything, then
-    echo -e "${YELLOW}Excluding: '$EXCLUDE'${RESET}"
-    tar -czf "$DEST/$BACKUP_NAME" --exclude "$EXCLUDE" "$SOURCE"
+
+# tar: (c)reate g(z)ip (v)erbose (f)ilename [filename.tar.gz] [contents]
+# check for exclusions
+TAR_EXCLUDES=() # from dir names in EXCLUDES to true exclusions in TAR_EXCLUDES
+for EX in "${EXCLUDES[@]}"; do # for each element in EXCLUDES, treat it as a seperate word and do
+    TAR_EXCLUDES+=(--exclude="$EX") # add --excludes=[excluded_file] to TAR_EXCLUDES array
+    echo -e "${YELLOW}Excluding: $EX${RESET}"
     # log backup exclusion
-    log "Excluding directory: $EXCLUDE"
-else
-    tar -czf "$DEST/$BACKUP_NAME" "$SOURCE" # tar: (c)reate g(z)ip (v)erbose (f)ilename [filename.tar.gz] [contents]
-fi
+    log "Excluding: $EX"
+done
+tar -czf "$DEST/$BACKUP_NAME" ${TAR_EXCLUDES[@]} "$SOURCE" # treat every element in TAR_EXCLUDES as a separate element
 
 # print success / error
 if [-f "$DEST/$BACKUP_NAME"]; then # if backup file is a file, then

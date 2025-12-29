@@ -18,7 +18,10 @@ if [[ "$1 == --help" || "$1 == -h" ]] then;
     echo "  and stores it in the destination directory with a timestamp."
     echo
     echo -e "${YELLOW}Options:${RESET}"
-    echo "  --help, -h Show this help menu"
+    echo "  --help, -h  Show this help menu"
+    echo "  --exclude [directory_path]   Excludes directory from backup"
+    echo "  --fast  Enables low compression, faster"
+    echo "  --max   Enables high compression, slower"
     exit 0
 fi
 

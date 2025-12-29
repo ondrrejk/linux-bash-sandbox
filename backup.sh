@@ -22,6 +22,13 @@ if [[ "$1 == --help" || "$1 == -h" ]] then;
     exit 0
 fi
 
+# --exclude flag
+EXCLUDE=""
+if [["$1" == "--exclude"]]; then
+    EXCLUDE="$2"
+    shift 2
+fi
+
 if [$# -ne 2]; then # if number of params -not equals 2 then
     echo "${RED}Error: You must provide a source file and a destination directory."
     echo "${YELLOW}Usage: ./backup.sh [source_file] [destination_dir]${RESET}"
@@ -52,7 +59,12 @@ BACKUP_NAME="backup_$TIMESTAMP.tar.gz" # tar = tape archive, .gz = GNU zip => ma
 
 # create the archive
 echo "${YELLOW}Creating backup...${RESET}"
-tar -czf "$DEST/$BACKUP_NAME" "$SOURCE" # tar: (c)reate g(z)ip (v)erbose (f)ilename [filename.tar.gz] [contents]
+if [-n "$EXCLUDE"]; then # if EXCLUDE contains anything, then
+    echo -e "${YELLOW}Excluding: '$EXCLUDE'${RESET}"
+    tar -czf "$DEST/$BACKUP_NAME" --exclude "$EXCLUDE" "$SOURCE"
+else
+    tar -czf "$DEST/$BACKUP_NAME" "$SOURCE" # tar: (c)reate g(z)ip (v)erbose (f)ilename [filename.tar.gz] [contents]
+fi
 
 # print success / error
 if [-f "$DEST/$BACKUP_NAME"]; then # if backup file is a file, then

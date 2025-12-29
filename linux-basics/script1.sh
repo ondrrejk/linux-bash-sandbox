@@ -177,3 +177,5 @@ free
 # free -c [count] => repeat the display [count] times
 # free -t => show a total line for physical memory and swap space combined
 # free -h => displays system memory usage in a human-readable format
+
+mpstat # shows processor info and statistics

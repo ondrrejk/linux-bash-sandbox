@@ -19,9 +19,9 @@ if [[ "$1 == --help" || "$1 == -h" ]] then;
     echo
     echo -e "${YELLOW}Options:${RESET}"
     echo "  --help, -h  Show this help menu"
-    echo "  --exclude [directory_path]   Excludes directory from backup"
     echo "  --fast  Enables low compression, faster"
     echo "  --max   Enables high compression, slower"
+    echo "  --exclude [directory_path]   Excludes directory from backup"
     exit 0
 fi
 
@@ -33,6 +33,16 @@ LOGFILE="backup.log"
 log(){
     echo "$TIMESTAMP - $1" >> "$LOGFILE" # logs current timestamp and provided message (first parameter)
 }
+
+# compression options
+COMPRESSION=""
+if [["$1" == --fast]]; then
+    COMPRESSION="--fast"
+    shift
+elif [["$1" == --max]]; then
+    COMPRESSION="--max"
+    shift
+fi
 
 # --exclude flag
 EXCLUDES=()
@@ -82,7 +92,16 @@ for EX in "${EXCLUDES[@]}"; do # for each element in EXCLUDES, treat it as a sep
     # log backup exclusion
     log "Excluding: $EX"
 done
-tar -czf "$DEST/$BACKUP_NAME" ${TAR_EXCLUDES[@]} "$SOURCE" # treat every element in TAR_EXCLUDES as a separate element
+# compression options
+if [[ "$COMPRESSION" == "--fast" ]]; then
+    TAR_OPTIONS="-1"
+elif [[ "$COMPRESSION" == "--max" ]]; then
+    TAR_OPTIONS="-9"
+else
+    TAR_OPTIONS=""
+fi
+# apply tar options and exclusions to tar and create backup
+tar -czf "$DEST/$BACKUP_NAME" "$TAR_OPTIONS" ${TAR_EXCLUDES[@]} "$SOURCE" # treat every element in TAR_EXCLUDES as a separate element
 
 # print success / error
 if [-f "$DEST/$BACKUP_NAME"]; then # if backup file is a file, then

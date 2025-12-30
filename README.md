@@ -20,6 +20,8 @@ The goal of this repo is to:
 
 ## How to Run
 Instructions will be added as each project is implemented.
+If you want to run a certain script, first assure yourself that you copy the whole file with all collateral files (log files, etc.).
+Also use "chmod +x [script_name]" to make the script executable.
 
 ## Current Projects
 **System Monitoring Script**  

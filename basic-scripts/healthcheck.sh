@@ -204,6 +204,7 @@ summary_report() {
     append "Memory Used: $(free -h | awk '/Mem:/ {print $3 "/" $2}')"
     append "Disk Usage:"
     append "$(df -h --output=source,pcent | tail -n +2)"
+    # --output=source,pcent is a built-in flag to output the filesystem name and the used space percentage
     append ""
 }
 

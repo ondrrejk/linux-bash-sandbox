@@ -2,6 +2,7 @@
 
 # simple backup script => backs up files
 # Usage: ./backup.sh [source_file] [destination_dir]
+# USE WITH A 'backup.log' FILE IN THE SAME DIRECTORY TO RUN THIS SUCCESSFULLY
 
 # color palette - ansi escape codes (30-37=foreground colors)
 RED="\e[31m" # m signifies end of line

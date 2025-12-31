@@ -1,15 +1,7 @@
 # 🐧 Bash Playground
 
 This repository is my personal sandbox for learning, experimenting, and practicing Bash scripting and Linux command‑line skills.  
-Nothing here has to be perfect, this is where I break things, test ideas, and learn by doing.
-
-## What I'm Working On
-This repo will contain small Bash projects such as:
-- System monitoring tools  
-- Backup scripts  
-- User management automation  
-- File operations  
-- Anything else I want to experiment with  
+Nothing here has to be work, this is where I break things, test ideas, and learn by doing.
 
 ## Purpose
 The goal of this repo is to:
@@ -19,10 +11,7 @@ The goal of this repo is to:
 - Put my learned concepts to life by building practical use examples.
 
 ## How to Run
-Instructions will be added as each project is implemented.
-If you want to run a certain script, first assure yourself that you copy the whole file with all collateral files (log files, etc.).
-Also use "chmod +x [script_name]" to make the script executable.
+Rather don't
 
-## Current Projects
-**System Monitoring Script**  
-A simple tool that displays CPU, RAM, and disk usage in a clean, readable format.
+
+or atleast on a VM so you don't break your machine.
